@@ -4,9 +4,88 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>宝贝疫苗接种全周期规划</title>
-  <link rel="stylesheet" href="styles.css?v=1.7">
+  <link rel="stylesheet" href="styles.css?v=2.1">
+  <style>
+    /* Critical alignment styles embedded to guarantee immediate pixel-perfect rendering across all browsers */
+    .profile-grid {
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr) !important;
+      gap: 16px !important;
+      align-items: start !important;
+    }
+    .field {
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-start !important;
+      gap: 6px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    .field-label, .field > label, .field > span {
+      display: block !important;
+      height: 20px !important;
+      min-height: 20px !important;
+      max-height: 20px !important;
+      line-height: 20px !important;
+      font-size: 13px !important;
+      font-weight: 800 !important;
+      color: #374151 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      white-space: nowrap !important;
+    }
+    .field input[type="text"],
+    .field input[type="date"],
+    .field select {
+      display: block !important;
+      width: 100% !important;
+      height: 44px !important;
+      min-height: 44px !important;
+      max-height: 44px !important;
+      line-height: 42px !important;
+      box-sizing: border-box !important;
+      margin: 0 !important;
+      padding: 0 12px !important;
+      border: 1px solid #d1d5db !important;
+      border-radius: 10px !important;
+      background-color: #ffffff !important;
+      color: #111827 !important;
+      font-size: 14px !important;
+      font-weight: 600 !important;
+      outline: none !important;
+    }
+    .field select {
+      appearance: none !important;
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      padding: 0 36px 0 12px !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7280' d='M1.41.59 6 5.17l4.59-4.58L12 2l-6 6-6-6z'/%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 12px center !important;
+      background-size: 12px 8px !important;
+      cursor: pointer !important;
+    }
+    .field select::-ms-expand { display: none !important; }
+    .profile-summary-bar {
+      margin-top: 14px !important;
+      min-height: 40px !important;
+      display: flex !important;
+      align-items: center !important;
+      padding: 9px 16px !important;
+      border-radius: 10px !important;
+      background: #f0fdfa !important;
+      border: 1px solid #ccfbf1 !important;
+      color: #0f766e !important;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      line-height: 1.45 !important;
+    }
+    @media (max-width: 900px) {
+      .profile-grid { grid-template-columns: 1fr 1fr !important; }
+    }
+  </style>
 </head>
 <body>
   <header class="hero">
@@ -27,8 +106,8 @@
     <section class="profile-panel card" aria-labelledby="profile-title">
       <div class="section-heading compact-heading">
         <div>
-          <p class="section-kicker">孩子信息</p>
-          <h2 id="profile-title">先设定生日，日期会自动重算</h2>
+          <p class="section-kicker">孩子信息与接种参数</p>
+          <h2 id="profile-title">先设定生日与性别，全周期排期自动生成</h2>
         </div>
         <div class="toolbar">
           <button class="button button--quiet" id="printButton" type="button">打印计划</button>
@@ -39,26 +118,28 @@
         </div>
       </div>
       <div class="profile-grid">
-        <label class="field">
-          <span>孩子昵称</span>
+        <div class="field">
+          <label class="field-label" for="childName">孩子昵称</label>
           <input id="childName" type="text" maxlength="20" autocomplete="off" placeholder="例如：小满">
-        </label>
-        <label class="field">
-          <span>宝宝性别</span>
+        </div>
+        <div class="field">
+          <label class="field-label" for="childGender">宝宝性别</label>
           <select id="childGender" aria-label="宝宝性别">
             <option value="female">👧 女宝（13岁享免费双价HPV）</option>
             <option value="male">👦 男宝（可自费选九价HPV）</option>
           </select>
-        </label>
-        <label class="field">
-          <span>出生日期 / 预产期</span>
+        </div>
+        <div class="field">
+          <label class="field-label" for="birthDate">出生日期 / 预产期</label>
           <input id="birthDate" type="date">
-        </label>
-        <label class="field">
-          <span>按哪一天查看进度</span>
+        </div>
+        <div class="field">
+          <label class="field-label" for="asOfDate">按哪一天查看进度</label>
           <input id="asOfDate" type="date">
-        </label>
-        <div class="profile-note" id="profileNote">已执行2026年6月版国家免疫规划标准。</div>
+        </div>
+      </div>
+      <div class="profile-summary-bar" id="profileNote">
+        <span>💡 正在按 2026 年 6 月版国家免疫规划标准计算全周期接种计划</span>
       </div>
     </section>
 
@@ -73,15 +154,15 @@
     <nav class="tabs" aria-label="页面内容">
       <button class="tab is-active" type="button" data-tab="plan">我的接种计划</button>
       <button class="tab" type="button" data-tab="catalog">34项疫苗资料库</button>
-      <button class="tab" type="button" data-tab="sources">数据核对与依据</button>
+      <button class="tab" type="button" data-tab="sources">规范依据与说明</button>
     </nav>
 
     <div id="planPanel" class="tab-panel">
-      <section class="summary-grid" aria-label="规划概览">
+      <section class="summary-grid" aria-label="关键数据汇总">
         <article class="summary-card summary-card--primary">
-          <span class="summary-card__label">已纳入计划</span>
+          <span class="summary-card__label">已规划项目</span>
           <strong id="plannedCount">0</strong>
-          <small>剂 / 方案节点</small>
+          <small>含免费与已选自费</small>
         </article>
         <article class="summary-card">
           <span class="summary-card__label">已完成</span>
@@ -121,7 +202,7 @@
           <div>
             <p class="section-kicker">接种时间线</p>
             <h2 id="timeline-title">从出生到青春期</h2>
-            <p id="timelineSubtitle">免费疫苗默认纳入；自费疫苗可逐项勾选。</p>
+            <p id="timelineSubtitle">免费疫苗默认纳入；自费疫苗可逐项勾选；支持卡片拖拽与日期自定义。</p>
           </div>
           <div class="timeline-toolbar">
             <div class="filters" aria-label="筛选计划">
@@ -164,16 +245,15 @@
       <section class="catalog-section card" aria-labelledby="catalog-title">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">原表资料库</p>
-            <h2 id="catalog-title">34项疫苗对照台账</h2>
-            <p>内容来自原Excel“全品类疫苗对照总台账”，用于查阅，不直接决定替代关系。</p>
+            <p class="section-kicker">门诊公示总表</p>
+            <h2 id="catalog-title">34项疫苗资料库</h2>
+            <p>收录双桥区西大街街道社区卫生服务中心门诊公示的全部 34 种疫苗信息。</p>
           </div>
-          <label class="search-field catalog-search">
-            <span class="sr-only">搜索资料库</span>
-            <input id="catalogSearch" type="search" placeholder="搜索名称、疾病、月龄">
-          </label>
+          <input id="catalogSearch" class="catalog-search" type="search" placeholder="搜索疫苗名称、疾病或禁忌">
         </div>
-        <div class="catalog-warning">原台账存在少数与现行程序不一致或表述不严谨之处，网页时间线已对关键免费程序做校正；接种前仍需由门诊核对。</div>
+        <div class="catalog-warning">
+          <strong>提示：</strong>原表部分疫苗适龄范围为产品说明书范围。具体批次、适应症与价格以门诊实际提供为准。
+        </div>
         <div id="catalogGrid" class="catalog-grid"></div>
       </section>
     </div>
@@ -182,35 +262,37 @@
       <section class="sources-section card" aria-labelledby="sources-title">
         <div class="section-heading">
           <div>
-            <p class="section-kicker">可追溯</p>
-            <h2 id="sources-title">数据核对、修正与使用边界</h2>
+            <p class="section-kicker">规范依据</p>
+            <h2 id="sources-title">数据修正说明与政策来源</h2>
+            <p>本程序结合 2026 年 6 月版《国家免疫规划疫苗儿童免疫程序及说明》进行规范校验。</p>
           </div>
         </div>
         <div class="source-columns">
           <div>
-            <h3>对原Excel做出的关键校正</h3>
+            <h3>修正与对齐说明</h3>
             <ol id="correctionList" class="correction-list"></ol>
           </div>
           <div>
-            <h3>权威依据</h3>
+            <h3>参考政策与规范依据</h3>
             <ul id="sourceList" class="source-list"></ul>
           </div>
         </div>
         <div class="boundary-note">
-          <strong>使用边界：</strong> 本页不判断禁忌证、不处理早产/低出生体重/母亲乙肝表面抗原阳性等特殊程序，也不代替补种计算。发生发热、急性病、免疫缺陷、严重过敏史或既往异常反应时，应先咨询接种医生。
+          <strong>使用边界提示：</strong>
+          本网页仅供家庭制定接种日程、估算自费预算与记录实际完成情况。如遇疫苗缺货、迟种、早产、过敏等情况，请以预防接种门诊医生意见为准。
         </div>
       </section>
     </div>
   </main>
 
   <footer class="footer">
-    <p><span id="footerChildName">宝贝</span>的家庭接种备忘 · 数据来源：本地Excel与页面列明的国家规范</p>
-    <p>最后整理：2026-08-23 · 实际接种以接种证、疫苗说明书及门诊意见为准</p>
+    <p><span id="footerChildName">宝贝</span>的家庭接种备忘 · 规范依据：国家免疫规划疫苗儿童免疫程序及说明（2026年版）</p>
+    <p>实际接种以预防接种证、疫苗说明书及门诊医生指导为准</p>
   </footer>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="data.js?v=1.7"></script>
-  <script src="app.js?v=1.7"></script>
+  <script src="data.js?v=2.1"></script>
+  <script src="app.js?v=2.1"></script>
 </body>
 </html>

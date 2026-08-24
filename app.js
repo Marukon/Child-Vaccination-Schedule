@@ -600,18 +600,19 @@
 
   function renderProfile() {
     elements.childName.value = state.childName;
-    elements.childGender.value = state.childGender;
+    if (elements.childGender) elements.childGender.value = state.childGender;
     elements.birthDate.value = state.birthDate;
     elements.asOfDate.value = state.asOfDate;
+
     const childLabel = state.childName.trim() || (state.childGender === "female" ? "女宝" : "男宝");
     elements.footerChildName.textContent = childLabel;
     const birth = parseIso(state.birthDate);
     const genderNote = state.childGender === "female"
-      ? "（女宝满13周岁享受国家免费双价HPV疫苗）"
-      : "（男宝按2026年规范不享受免费双价HPV，可自费选择九价HPV）";
-    elements.profileNote.textContent = birth
-      ? `${childLabel}的计划从 ${formatDate(birth)} 起算 ${genderNote}`
-      : "请设置出生日期或预产期，网页才能计算计划日期。";
+      ? "女宝满 13 周岁享国家免费双价 HPV 疫苗（或自费升级四价/九价）"
+      : "男宝按 2026 规范不享免费双价 HPV，可自费选择九价 HPV";
+    elements.profileNote.innerHTML = birth
+      ? `💡 <strong>${escapeHtml(childLabel)}</strong>（${state.childGender === "female" ? "女宝" : "男宝"}）的接种计划从 <strong>${formatDate(birth)}</strong> 起算 · ${genderNote} · 依据 2026 年 6 月版国家免疫规划`
+      : "💡 请设置出生日期或预产期，系统将自动推算全周期接种计划。";
   }
 
   function renderSources() {
