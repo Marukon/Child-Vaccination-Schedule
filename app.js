@@ -33,6 +33,7 @@
   const defaultState = {
     version: 1,
     childName: "",
+    childGender: "female", // "female" | "male"
     birthDate: DATA.meta.defaultBirthDate,
     asOfDate: todayIso,
     paidSelected: {},
@@ -43,6 +44,7 @@
     customDates: {},   // taskId -> custom due date ISO (YYYY-MM-DD)
     customMonths: {},  // taskId -> custom ageMonths (number)
     hideReplaced: false,
+    hideUnplanned: false,
     hideCompleted: false,
   };
 
@@ -52,6 +54,7 @@
 
   const elements = {
     childName: document.getElementById("childName"),
+    childGender: document.getElementById("childGender"),
     birthDate: document.getElementById("birthDate"),
     asOfDate: document.getElementById("asOfDate"),
     profileNote: document.getElementById("profileNote"),
@@ -62,6 +65,7 @@
     scheduleSearch: document.getElementById("scheduleSearch"),
     scheduleFilter: document.getElementById("scheduleFilter"),
     hideReplacedToggle: document.getElementById("hideReplacedToggle"),
+    hideUnplannedToggle: document.getElementById("hideUnplannedToggle"),
     hideCompletedToggle: document.getElementById("hideCompletedToggle"),
     catalogSearch: document.getElementById("catalogSearch"),
     catalogGrid: document.getElementById("catalogGrid"),
@@ -83,6 +87,7 @@
       return {
         ...structuredClone(defaultState),
         ...saved,
+        childGender: saved.childGender || "female",
         paidSelected: { ...saved.paidSelected },
         planSelected: { ...saved.planSelected },
         planConfirmed: { ...saved.planConfirmed },
@@ -91,6 +96,7 @@
         customDates: { ...saved.customDates },
         customMonths: { ...saved.customMonths },
         hideReplaced: Boolean(saved.hideReplaced),
+        hideUnplanned: Boolean(saved.hideUnplanned),
         hideCompleted: Boolean(saved.hideCompleted),
       };
     } catch {
@@ -221,11 +227,32 @@
   function buildItems() {
     const birth = parseIso(state.birthDate) ?? parseIso(DATA.meta.defaultBirthDate);
     const replacements = activeReplacementMap();
-    const items = DATA.schedule.map((task) => {
+    const isMale = state.childGender === "male";
+
+    const items = [];
+
+    for (const task of DATA.schedule) {
+      // Gender specific filtering for HPV in national plan
+      if (task.gender === "female" && isMale) {
+        const timing = getEffectiveTiming(task.id, task.ageMonths, birth);
+        items.push({
+          ...task,
+          planned: false,
+          replacedBy: "国家免疫规划（2026年版）免费双价HPV仅面向13周岁女童；男童可自费接种九价HPV",
+          dueDate: timing.dueDate,
+          ageMonths: timing.ageMonths,
+          isCustom: timing.isCustom,
+          defaultDueDate: timing.defaultDueDate,
+          defaultAgeMonths: timing.defaultAgeMonths,
+          isPackage: false,
+        });
+        continue;
+      }
+
       const replacedBy = replacements.get(task.id) || "";
       const selected = task.isFree ? !replacedBy : Boolean(state.paidSelected[task.id]);
       const timing = getEffectiveTiming(task.id, task.ageMonths, birth);
-      return {
+      items.push({
         ...task,
         planned: selected,
         replacedBy,
@@ -235,8 +262,8 @@
         defaultDueDate: timing.defaultDueDate,
         defaultAgeMonths: timing.defaultAgeMonths,
         isPackage: false,
-      };
-    });
+      });
+    }
 
     for (const plan of DATA.replacementPlans) {
       if (!state.planSelected[plan.id]) continue;
@@ -283,7 +310,7 @@
 
   function statusBadge(status) {
     const labels = {
-      replaced: ["已替代", "replaced"],
+      replaced: ["已替代/不适用", "replaced"],
       done: ["已完成", "done"],
       overdue: ["已过计划日", "overdue"],
       upcoming: ["未来90天", "upcoming"],
@@ -327,6 +354,7 @@
 
   function matchesTimelineFilter(item, status) {
     if (state.hideReplaced && item.replacedBy) return false;
+    if (state.hideUnplanned && !item.planned) return false;
     if (state.hideCompleted && state.completed[item.id]) return false;
 
     const query = elements.scheduleSearch.value.trim().toLowerCase();
@@ -346,6 +374,10 @@
     if (elements.hideReplacedToggle) {
       elements.hideReplacedToggle.checked = Boolean(state.hideReplaced);
       elements.hideReplacedToggle.closest(".toggle-chip")?.classList.toggle("is-active", Boolean(state.hideReplaced));
+    }
+    if (elements.hideUnplannedToggle) {
+      elements.hideUnplannedToggle.checked = Boolean(state.hideUnplanned);
+      elements.hideUnplannedToggle.closest(".toggle-chip")?.classList.toggle("is-active", Boolean(state.hideUnplanned));
     }
     if (elements.hideCompletedToggle) {
       elements.hideCompletedToggle.checked = Boolean(state.hideCompleted);
@@ -432,7 +464,7 @@
             ${item.dose ? `<span class="meta-chip">💊 ${escapeHtml(item.dose)}</span>` : ""}
           </div>
           ${item.detail ? `<div class="task-note">${escapeHtml(item.detail)}</div>` : ""}
-          ${item.replacedBy ? `<div class="task-replacement-alert">✓ 已由“${escapeHtml(item.replacedBy)}”替代，免费项目已自动取消</div>` : ""}
+          ${item.replacedBy ? `<div class="task-replacement-alert">✓ ${escapeHtml(item.replacedBy)}</div>` : ""}
         </div>
 
         <!-- 3. Right Aside: Planned Date, Month Changer, Completed Checkbox & Actual Date -->
@@ -568,13 +600,17 @@
 
   function renderProfile() {
     elements.childName.value = state.childName;
+    elements.childGender.value = state.childGender;
     elements.birthDate.value = state.birthDate;
     elements.asOfDate.value = state.asOfDate;
-    const childLabel = state.childName.trim() || "宝贝";
+    const childLabel = state.childName.trim() || (state.childGender === "female" ? "女宝" : "男宝");
     elements.footerChildName.textContent = childLabel;
     const birth = parseIso(state.birthDate);
+    const genderNote = state.childGender === "female"
+      ? "（女宝满13周岁享受国家免费双价HPV疫苗）"
+      : "（男宝按2026年规范不享受免费双价HPV，可自费选择九价HPV）";
     elements.profileNote.textContent = birth
-      ? `${childLabel}的计划从 ${formatDate(birth)} 起算；支持直接修改计划日期或拖拽卡片调整月龄。`
+      ? `${childLabel}的计划从 ${formatDate(birth)} 起算 ${genderNote}`
       : "请设置出生日期或预产期，网页才能计算计划日期。";
   }
 
@@ -626,13 +662,14 @@
   function exportBackup() {
     const backup = {
       app: "宝贝疫苗接种全周期规划",
+      guideline: "2026年6月版国家免疫规划标准",
       exportedAt: new Date().toISOString(),
       state,
     };
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    const safeName = (state.childName.trim() || "宝贝").replace(/[\\/:*?"<>|]/g, "-");
+    const safeName = (state.childName.trim() || (state.childGender === "female" ? "女宝" : "男宝")).replace(/[\\/:*?"<>|]/g, "-");
     link.href = url;
     link.download = `${safeName}-疫苗规划备份-${todayIso}.json`;
     link.click();
@@ -648,6 +685,7 @@
       state = {
         ...structuredClone(defaultState),
         ...imported,
+        childGender: imported.childGender || "female",
         paidSelected: { ...imported.paidSelected },
         planSelected: { ...imported.planSelected },
         planConfirmed: { ...imported.planConfirmed },
@@ -656,6 +694,7 @@
         customDates: { ...imported.customDates },
         customMonths: { ...imported.customMonths },
         hideReplaced: Boolean(imported.hideReplaced),
+        hideUnplanned: Boolean(imported.hideUnplanned),
         hideCompleted: Boolean(imported.hideCompleted),
       };
       saveState();
@@ -725,6 +764,15 @@
     });
   }
 
+  if (elements.hideUnplannedToggle) {
+    elements.hideUnplannedToggle.addEventListener("change", (e) => {
+      state.hideUnplanned = e.target.checked;
+      saveState();
+      renderTimeline();
+      showToast(e.target.checked ? "已隐藏未选择的项目" : "已显示所有备选项目");
+    });
+  }
+
   if (elements.hideCompletedToggle) {
     elements.hideCompletedToggle.addEventListener("change", (e) => {
       state.hideCompleted = e.target.checked;
@@ -750,6 +798,14 @@
     state.childName = elements.childName.value;
     saveState();
     renderProfile();
+  });
+
+  elements.childGender.addEventListener("change", () => {
+    state.childGender = elements.childGender.value;
+    saveState();
+    renderProfile();
+    renderTimeline();
+    showToast(state.childGender === "female" ? "已切换为女宝模式（含13岁免费双价HPV）" : "已切换为男宝模式（提示自费九价HPV）");
   });
 
   elements.birthDate.addEventListener("change", () => {

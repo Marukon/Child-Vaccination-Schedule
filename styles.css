@@ -175,7 +175,7 @@ h3 { line-height: 1.35; }
 
 .profile-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1.35fr;
+  grid-template-columns: 1fr 1.1fr 1fr 1fr 1.3fr;
   gap: 14px;
   align-items: end;
 }

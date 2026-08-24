@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="light">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>宝贝疫苗接种全周期规划</title>
-  <link rel="stylesheet" href="styles.css?v=1.5">
+  <link rel="stylesheet" href="styles.css?v=1.7">
 </head>
 <body>
   <header class="hero">
@@ -44,6 +44,13 @@
           <input id="childName" type="text" maxlength="20" autocomplete="off" placeholder="例如：小满">
         </label>
         <label class="field">
+          <span>宝宝性别</span>
+          <select id="childGender" aria-label="宝宝性别">
+            <option value="female">👧 女宝（13岁享免费双价HPV）</option>
+            <option value="male">👦 男宝（可自费选九价HPV）</option>
+          </select>
+        </label>
+        <label class="field">
           <span>出生日期 / 预产期</span>
           <input id="birthDate" type="date">
         </label>
@@ -51,7 +58,7 @@
           <span>按哪一天查看进度</span>
           <input id="asOfDate" type="date">
         </label>
-        <div class="profile-note" id="profileNote">计划日期是提醒用的参考日期，并非预约凭证。</div>
+        <div class="profile-note" id="profileNote">已执行2026年6月版国家免疫规划标准。</div>
       </div>
     </section>
 
@@ -137,6 +144,10 @@
                 <input id="hideReplacedToggle" type="checkbox">
                 <span>隐藏已替代疫苗</span>
               </label>
+              <label class="toggle-chip" title="开启后，未勾选的自费备选项将不再显示，只保留您确认接种的计划清单">
+                <input id="hideUnplannedToggle" type="checkbox">
+                <span>隐藏未选择项目</span>
+              </label>
               <label class="toggle-chip" title="开启后，已经打过并标记完成的疫苗将不再显示，聚焦后续接种">
                 <input id="hideCompletedToggle" type="checkbox">
                 <span>隐藏已打过的疫苗</span>
@@ -199,7 +210,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script src="data.js?v=1.5"></script>
-  <script src="app.js?v=1.5"></script>
+  <script src="data.js?v=1.7"></script>
+  <script src="app.js?v=1.7"></script>
 </body>
 </html>
