@@ -4,295 +4,166 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>宝贝疫苗接种全周期规划</title>
-  <link rel="stylesheet" href="styles.css?v=2.1">
-  <style>
-    /* Critical alignment styles embedded to guarantee immediate pixel-perfect rendering across all browsers */
-    .profile-grid {
-      display: grid !important;
-      grid-template-columns: repeat(4, 1fr) !important;
-      gap: 16px !important;
-      align-items: start !important;
-    }
-    .field {
-      display: flex !important;
-      flex-direction: column !important;
-      justify-content: flex-start !important;
-      gap: 6px !important;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-    .field-label, .field > label, .field > span {
-      display: block !important;
-      height: 20px !important;
-      min-height: 20px !important;
-      max-height: 20px !important;
-      line-height: 20px !important;
-      font-size: 13px !important;
-      font-weight: 800 !important;
-      color: #374151 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      white-space: nowrap !important;
-    }
-    .field input[type="text"],
-    .field input[type="date"],
-    .field select {
-      display: block !important;
-      width: 100% !important;
-      height: 44px !important;
-      min-height: 44px !important;
-      max-height: 44px !important;
-      line-height: 42px !important;
-      box-sizing: border-box !important;
-      margin: 0 !important;
-      padding: 0 12px !important;
-      border: 1px solid #d1d5db !important;
-      border-radius: 10px !important;
-      background-color: #ffffff !important;
-      color: #111827 !important;
-      font-size: 14px !important;
-      font-weight: 600 !important;
-      outline: none !important;
-    }
-    .field select {
-      appearance: none !important;
-      -webkit-appearance: none !important;
-      -moz-appearance: none !important;
-      padding: 0 36px 0 12px !important;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7280' d='M1.41.59 6 5.17l4.59-4.58L12 2l-6 6-6-6z'/%3E%3C/svg%3E") !important;
-      background-repeat: no-repeat !important;
-      background-position: right 12px center !important;
-      background-size: 12px 8px !important;
-      cursor: pointer !important;
-    }
-    .field select::-ms-expand { display: none !important; }
-    .profile-summary-bar {
-      margin-top: 14px !important;
-      min-height: 40px !important;
-      display: flex !important;
-      align-items: center !important;
-      padding: 9px 16px !important;
-      border-radius: 10px !important;
-      background: #f0fdfa !important;
-      border: 1px solid #ccfbf1 !important;
-      color: #0f766e !important;
-      font-size: 13px !important;
-      font-weight: 600 !important;
-      line-height: 1.45 !important;
-    }
-    @media (max-width: 900px) {
-      .profile-grid { grid-template-columns: 1fr 1fr !important; }
-    }
-  </style>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="description" content="家庭儿童疫苗接种计划、方案对比与接种记录。">
+  <title>接种日历 · 儿童疫苗规划</title>
+  <link rel="stylesheet" href="styles.css?v=3.0">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <script src="data.js?v=3.0" defer></script>
+  <script src="replacement.js?v=3.0" defer></script>
+  <script src="planner.js?v=3.0" defer></script>
+  <script src="app.js?v=3.0" defer></script>
 </head>
 <body>
-  <header class="hero">
-    <div class="hero__inner">
-      <div class="brand">
-        <div class="brand__mark" aria-hidden="true">苗</div>
-        <div>
-          <p class="eyebrow">LOCAL · PRIVATE · OFFLINE</p>
-          <h1>宝贝疫苗接种全周期规划</h1>
-          <p class="hero__subtitle">把免费必选、自费可选、替代关系和实际接种记录放在同一条时间线上。</p>
-        </div>
-      </div>
-      <div class="offline-pill"><span></span> 完全离线 · 数据仅存本机</div>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="#main"><img src="icon.svg" alt="" width="38" height="38"> 接种日历</a>
+      <nav class="tabs" aria-label="页面内容">
+        <button class="tab is-active" type="button" data-tab="plan" aria-pressed="true" aria-controls="planPanel">接种计划</button>
+        <button class="tab" type="button" data-tab="catalog" aria-pressed="false" aria-controls="catalogPanel">疫苗资料</button>
+        <button class="tab" type="button" data-tab="sources" aria-pressed="false" aria-controls="sourcesPanel">参考依据</button>
+      </nav>
+      <div class="private-label"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3m-4 4v3"/></svg> 仅存此浏览器</div>
     </div>
   </header>
 
-  <main class="page-shell">
-    <section class="profile-panel card" aria-labelledby="profile-title">
-      <div class="section-heading compact-heading">
-        <div>
-          <p class="section-kicker">孩子信息与接种参数</p>
-          <h2 id="profile-title">先设定生日与性别，全周期排期自动生成</h2>
-        </div>
-        <div class="toolbar">
-          <button class="button button--quiet" id="printButton" type="button">打印计划</button>
-          <button class="button button--quiet" id="exportButton" type="button">导出备份</button>
-          <button class="button button--quiet" id="importButton" type="button">导入记录</button>
-          <button class="button button--danger-quiet" id="resetButton" type="button">重置</button>
-          <input id="importFile" type="file" accept="application/json,.json" hidden>
-        </div>
-      </div>
-      <div class="profile-grid">
-        <div class="field">
-          <label class="field-label" for="childName">孩子昵称</label>
-          <input id="childName" type="text" maxlength="20" autocomplete="off" placeholder="例如：小满">
-        </div>
-        <div class="field">
-          <label class="field-label" for="childGender">宝宝性别</label>
-          <select id="childGender" aria-label="宝宝性别">
-            <option value="female">👧 女宝（13岁享免费双价HPV）</option>
-            <option value="male">👦 男宝（可自费选九价HPV）</option>
-          </select>
-        </div>
-        <div class="field">
-          <label class="field-label" for="birthDate">出生日期 / 预产期</label>
-          <input id="birthDate" type="date">
-        </div>
-        <div class="field">
-          <label class="field-label" for="asOfDate">按哪一天查看进度</label>
-          <input id="asOfDate" type="date">
-        </div>
-      </div>
-      <div class="profile-summary-bar" id="profileNote">
-        <span>💡 正在按 2026 年 6 月版国家免疫规划标准计算全周期接种计划</span>
-      </div>
-    </section>
-
-    <section class="safety-banner" aria-label="医疗安全提示">
-      <div class="safety-banner__icon" aria-hidden="true">!</div>
-      <div>
-        <strong>这是家庭规划工具，不替代接种门诊评估。</strong>
-        <p>联合疫苗、流脑疫苗、HPV疫苗的可替代剂次会受具体产品说明书、既往剂次、年龄、库存和当地政策影响。页面中标注“需门诊确认”的方案，在确认前不会取消免费疫苗。</p>
-      </div>
-    </section>
-
-    <nav class="tabs" aria-label="页面内容">
-      <button class="tab is-active" type="button" data-tab="plan">我的接种计划</button>
-      <button class="tab" type="button" data-tab="catalog">34项疫苗资料库</button>
-      <button class="tab" type="button" data-tab="sources">规范依据与说明</button>
-    </nav>
-
+  <main class="shell" id="main">
     <div id="planPanel" class="tab-panel">
-      <section class="summary-grid" aria-label="关键数据汇总">
-        <article class="summary-card summary-card--primary">
-          <span class="summary-card__label">已规划项目</span>
-          <strong id="plannedCount">0</strong>
-          <small>含免费与已选自费</small>
-        </article>
-        <article class="summary-card">
-          <span class="summary-card__label">已完成</span>
-          <strong id="completedCount">0</strong>
-          <small id="completionRate">完成率 0%</small>
-        </article>
-        <article class="summary-card">
-          <span class="summary-card__label">未来90天</span>
-          <strong id="upcomingCount">0</strong>
-          <small>需要提前咨询或预约</small>
-        </article>
-        <article class="summary-card summary-card--cost">
-          <span class="summary-card__label">自费预算</span>
-          <strong id="budgetTotal">¥0</strong>
-          <small>按原Excel公示价格估算</small>
-        </article>
-      </section>
-
-      <section class="replacement-section card" aria-labelledby="replacement-title">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">替代方案</p>
-            <h2 id="replacement-title">先选方案，再看时间线</h2>
-            <p>选中符合条件的自费方案后，对应免费剂次会自动标为“已替代”，不会重复规划。</p>
-          </div>
-          <div class="legend legend--inline">
-            <span><i class="dot dot--free"></i> 免费必选</span>
-            <span><i class="dot dot--paid"></i> 自费可选</span>
-            <span><i class="dot dot--replaced"></i> 已被替代</span>
-          </div>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow"><span></span> 儿童接种计划 · 国家免疫规划 2026</p>
+          <h1>孩子的疫苗接种日历</h1>
+          <p>查看每个年龄段的接种安排，比较同类方案，记录实际接种。</p>
+          <div class="hero-actions"><a class="button button--primary" href="#replacement-title">比较替代方案 <span aria-hidden="true">↓</span></a><a class="button" href="#timeline-title">查看时间线</a></div>
         </div>
-        <div id="replacementPlans" class="replacement-grid"></div>
+        <img class="hero-art" src="calendar-art.svg" width="455" height="220" alt="">
       </section>
 
-      <section class="timeline-section" aria-labelledby="timeline-title">
-        <div class="section-heading timeline-heading">
-          <div>
-            <p class="section-kicker">接种时间线</p>
-            <h2 id="timeline-title">从出生到青春期</h2>
-            <p id="timelineSubtitle">免费疫苗默认纳入；自费疫苗可逐项勾选；支持卡片拖拽与日期自定义。</p>
+      <section class="profile-panel panel" aria-labelledby="profile-title">
+        <div class="topline">
+          <h2 id="profile-title">孩子资料</h2>
+          <details class="tools">
+            <summary>记录与备份 <span aria-hidden="true">⌄</span></summary>
+            <div class="tools-menu">
+              <button class="button" id="printButton" type="button">打印计划</button>
+              <button class="button" id="exportButton" type="button">导出备份</button>
+              <button class="button" id="importButton" type="button">导入备份</button>
+              <button class="button button--danger" id="resetButton" type="button">重置计划</button>
+              <input id="importFile" type="file" accept="application/json,.json" hidden>
+            </div>
+          </details>
+        </div>
+        <div class="profile-grid">
+          <label>昵称 <input id="childName" type="text" maxlength="20" autocomplete="off" placeholder="例如：小满"></label>
+          <label>性别 <select id="childGender"><option value="female">女</option><option value="male">男</option></select></label>
+          <label>出生日期 / 预产期 <input id="birthDate" type="date"></label>
+          <label>查看进度的日期 <input id="asOfDate" type="date"></label>
+        </div>
+        <p id="profileNote" class="profile-note"></p>
+      </section>
+
+      <section class="summary-grid" aria-label="计划概览">
+        <article class="metric"><span>已安排</span><strong id="plannedCount">—</strong><small>含已应用方案</small></article>
+        <article class="metric"><span>已完成</span><strong id="completedCount">—</strong><small id="completionRate">计划完成率</small></article>
+        <article class="metric metric--next"><span>未来 90 天</span><strong id="upcomingCount">—</strong><small id="nextVisit">按查看进度的日期起算</small></article>
+        <article class="metric metric--cost"><span>自费预算</span><strong id="budgetTotal">—</strong><small>全程估算 · 以门诊为准</small></article>
+      </section>
+
+      <div class="workspace">
+        <aside class="replacement-section" id="replacement" aria-labelledby="replacement-title">
+          <div class="section-intro"><p class="eyebrow">方案比较</p><h2 id="replacement-title" tabindex="-1">可以换哪些疫苗？</h2><p>按疾病查看备选。门诊确认前保留原接种安排。</p></div>
+          <div id="replacementPlans" class="replacement-list"></div>
+          <div class="safety-note">
+            <strong>带上接种证去门诊</strong>
+            <p>缺货、迟种、已有剂次或需调整程序时，请让门诊核对。计划日期用于家庭备忘。</p>
           </div>
-          <div class="timeline-toolbar">
-            <div class="filters" aria-label="筛选计划">
-              <label class="search-field">
-                <span class="sr-only">搜索疫苗或疾病</span>
-                <input id="scheduleSearch" type="search" placeholder="搜索疫苗或疾病">
-              </label>
-              <select id="scheduleFilter" aria-label="状态筛选">
-                <option value="all">全部项目</option>
-                <option value="planned">仅看已规划</option>
-                <option value="upcoming">未来90天</option>
-                <option value="overdue">已过计划日</option>
-                <option value="uncompleted">仅看未接种</option>
-                <option value="paid">自费项目</option>
-                <option value="replaced">已替代免费项</option>
-              </select>
+        </aside>
+        <section class="timeline-section" aria-labelledby="timeline-title">
+          <div class="topline section-intro">
+            <div><h2 id="timeline-title" tabindex="-1">接种时间线</h2><p>按月龄和周岁查看计划，逐项记录接种。</p></div>
+          </div>
+          <div class="timeline-controls panel">
+            <div class="filters">
+              <label class="search-field"><span class="sr-only">搜索时间线</span><input id="scheduleSearch" type="search" placeholder="搜索疫苗或疾病"></label>
+              <label><span class="sr-only">筛选时间线</span><select id="scheduleFilter">
+                <option value="planned">已安排</option><option value="all">全部项目</option>
+                <option value="upcoming">未来 90 天</option><option value="overdue">已过计划日</option>
+                <option value="uncompleted">未完成计划</option><option value="done">接种记录</option>
+                <option value="paid">自费项目</option><option value="replaced">已调整剂次</option>
+              </select></label>
             </div>
             <div class="timeline-toggles">
-              <label class="toggle-chip" title="开启后，被五联、曼海欣等方案替代的免费剂次将不再显示">
-                <input id="hideReplacedToggle" type="checkbox">
-                <span>隐藏已替代疫苗</span>
-              </label>
-              <label class="toggle-chip" title="开启后，未勾选的自费备选项将不再显示，只保留您确认接种的计划清单">
-                <input id="hideUnplannedToggle" type="checkbox">
-                <span>隐藏未选择项目</span>
-              </label>
-              <label class="toggle-chip" title="开启后，已经打过并标记完成的疫苗将不再显示，聚焦后续接种">
-                <input id="hideCompletedToggle" type="checkbox">
-                <span>隐藏已打过的疫苗</span>
-              </label>
+              <label class="toggle-chip"><input id="hideReplacedToggle" type="checkbox"> 隐藏已调整剂次</label>
+              <label class="toggle-chip"><input id="hideUnplannedToggle" type="checkbox"> 隐藏未选项目</label>
+              <label class="toggle-chip"><input id="hideCompletedToggle" type="checkbox"> 隐藏已完成</label>
             </div>
           </div>
-        </div>
-        <div id="timeline" class="timeline"></div>
-        <div id="emptyTimeline" class="empty-state" hidden>没有符合当前筛选条件的项目。</div>
-      </section>
+          <div id="timeline" class="timeline"></div>
+          <div id="emptyTimeline" class="empty-state panel" hidden>没有符合当前筛选条件的项目。试试切换筛选或清空搜索。</div>
+        </section>
+
+      </div>
     </div>
 
-    <div id="catalogPanel" class="tab-panel" hidden>
-      <section class="catalog-section card" aria-labelledby="catalog-title">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">门诊公示总表</p>
-            <h2 id="catalog-title">34项疫苗资料库</h2>
-            <p>收录双桥区西大街街道社区卫生服务中心门诊公示的全部 34 种疫苗信息。</p>
-          </div>
-          <input id="catalogSearch" class="catalog-search" type="search" placeholder="搜索疫苗名称、疾病或禁忌">
-        </div>
-        <div class="catalog-warning">
-          <strong>提示：</strong>原表部分疫苗适龄范围为产品说明书范围。具体批次、适应症与价格以门诊实际提供为准。
-        </div>
-        <div id="catalogGrid" class="catalog-grid"></div>
-      </section>
-    </div>
+    <section id="catalogPanel" class="tab-panel secondary-page" aria-labelledby="catalog-title" hidden>
+      <div class="section-intro">
+        <p class="eyebrow">门诊公示资料</p>
+        <h1 id="catalog-title">34 项疫苗资料</h1>
+        <p>原资料来自双桥区西大街街道社区卫生服务中心。产品适龄、收费与供应以当前说明书和门诊为准。</p>
+        <label class="catalog-search"><span class="sr-only">搜索疫苗资料</span><input id="catalogSearch" type="search" placeholder="搜索名称、疾病或禁忌"></label>
+        <p id="catalogCount" role="status"></p>
+      </div>
+      <div id="catalogGrid" class="catalog-grid"></div>
+    </section>
 
-    <div id="sourcesPanel" class="tab-panel" hidden>
-      <section class="sources-section card" aria-labelledby="sources-title">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">规范依据</p>
-            <h2 id="sources-title">数据修正说明与政策来源</h2>
-            <p>本程序结合 2026 年 6 月版《国家免疫规划疫苗儿童免疫程序及说明》进行规范校验。</p>
-          </div>
-        </div>
-        <div class="source-columns">
-          <div>
-            <h3>修正与对齐说明</h3>
-            <ol id="correctionList" class="correction-list"></ol>
-          </div>
-          <div>
-            <h3>参考政策与规范依据</h3>
-            <ul id="sourceList" class="source-list"></ul>
-          </div>
-        </div>
-        <div class="boundary-note">
-          <strong>使用边界提示：</strong>
-          本网页仅供家庭制定接种日程、估算自费预算与记录实际完成情况。如遇疫苗缺货、迟种、早产、过敏等情况，请以预防接种门诊医生意见为准。
-        </div>
-      </section>
-    </div>
+    <section id="sourcesPanel" class="tab-panel secondary-page" aria-labelledby="sources-title" hidden>
+      <div class="section-intro">
+        <p class="eyebrow">文档与来源</p>
+        <h1 id="sources-title">接种计划的参考依据</h1>
+        <p>国家程序按 2026 年版整理。自费安排与金额保留原项目公示参考，具体产品须经门诊核对。</p>
+      </div>
+      <div class="source-columns">
+        <section class="panel source-panel"><h2>接种程序说明</h2><ol id="correctionList"></ol></section>
+        <section class="panel source-panel"><h2>原文与参考</h2><ul id="sourceList"></ul></section>
+      </div>
+    </section>
   </main>
 
-  <footer class="footer">
-    <p><span id="footerChildName">宝贝</span>的家庭接种备忘 · 规范依据：国家免疫规划疫苗儿童免疫程序及说明（2026年版）</p>
-    <p>实际接种以预防接种证、疫苗说明书及门诊医生指导为准</p>
+  <footer class="shell footer">
+    <p><span id="footerChildName">孩子</span>的接种备忘 · 数据仅保存在此浏览器</p>
+    <a href="国家免疫规划疫苗儿童免疫程序及说明（2026年版）.pdf">国家免疫规划 · 2026 年版 ↗</a>
+    <a href="https://github.com/Marukon/Child-Vaccination-Schedule">原项目 ↗</a>
   </footer>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="comparisonDialog" aria-labelledby="comparisonTitle">
+    <div class="dialog-head">
+      <div><p class="eyebrow">方案比较</p><h2 id="comparisonTitle"></h2></div>
+      <form method="dialog"><button class="button icon-button" aria-label="关闭方案比较" autofocus>×</button></form>
+    </div>
+    <form id="comparisonForm">
+      <div class="dialog-content" id="comparisonBody"></div>
+      <div class="dialog-actions">
+        <button class="button" id="cancelComparison" type="button">取消</button>
+        <button class="button button--primary" id="saveComparison" type="submit">保存</button>
+      </div>
+    </form>
+  </dialog>
 
-  <script src="data.js?v=2.1"></script>
-  <script src="app.js?v=2.1"></script>
+  <dialog id="taskDialog" aria-labelledby="taskDialogTitle">
+    <div class="dialog-head">
+      <div><p class="eyebrow">接种项目</p><h2 id="taskDialogTitle"></h2></div>
+      <form method="dialog"><button class="button icon-button" aria-label="关闭项目编辑">×</button></form>
+    </div>
+    <form id="taskForm">
+      <div class="dialog-content" id="taskDialogBody"></div>
+      <div class="dialog-actions">
+        <button class="button" id="cancelTask" type="button">取消</button>
+        <button class="button button--primary" type="submit">保存记录</button>
+      </div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status"></div>
 </body>
 </html>
+
